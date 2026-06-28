@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>投資複利計算首頁</title>
+<style>
+body{margin:0;font-family:Arial,"Microsoft JhengHei";background:#f4f7fb;color:#1f2937}
+.hero{padding:70px 24px;text-align:center;background:linear-gradient(135deg,#0b84ff,#00b894);color:white}
+.hero h1{font-size:42px;margin:0 0 16px}
+.hero p{font-size:18px;line-height:1.8}
+.btn{display:inline-block;margin-top:24px;padding:14px 28px;background:white;color:#0b84ff;
+text-decoration:none;border-radius:999px;font-weight:bold}
+.wrap{max-width:1050px;margin:40px auto;padding:0 24px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card{background:white;padding:24px;border-radius:16px;box-shadow:0 5px 18px #0001;text-align:center}
+.card h3{color:#0b84ff}
+.section{background:white;margin-top:36px;padding:30px;border-radius:16px}
+footer{text-align:center;padding:24px;color:#777}
+@media(max-width:800px){.grid{grid-template-columns:1fr 1fr}.hero h1{font-size:32px}}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>投資複利計算機</h1>
+  <p>輸入起始本金、投資年數與年化報酬率，快速估算最終累積金額、總利息與年度成長曲線。</p>
+  <a class="btn" href="compound.html">開始試算</a>
+</section>
+
+<div class="wrap">
+  <div class="grid">
+    <div class="card"><h3>起始本金</h3><p>設定目前可投入的初始資金。</p></div>
+    <div class="card"><h3>投資年數</h3><p>規劃長期持有期間。</p></div>
+    <div class="card"><h3>年化利率</h3><p>輸入預估年度報酬率。</p></div>
+    <div class="card"><h3>累積總額</h3><p>自動計算最終資產。</p></div>
+  </div>
+
+  <div class="section">
+    <h2>功能特色</h2>
+    <ul>
+      <li>上方顯示結論摘要：初始本金、年利率、期間、最終金額、總利息。</li>
+      <li>中間顯示線圖：X 軸為年，Y 軸為金額，單位為萬元。</li>
+      <li>下方列出年度細項表，方便追蹤每年本金與利息變化。</li>
+    </ul>
+  </div>
+</div>
+
+<footer>© 2026 投資複利計算工具</footer>
+
+</body>
+</html>
