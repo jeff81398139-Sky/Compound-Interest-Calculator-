@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>投資複利計算機</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei";background:#f5f7fa;padding:24px;color:#222}
+.container{max-width:1000px;margin:auto;background:#fff;padding:24px;border-radius:14px;box-shadow:0 4px 18px #0001}
+h1{margin-top:0}
+.input-grid,.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.card{background:#eef6ff;padding:14px;border-radius:10px}
+label{font-weight:bold}
+input{width:100%;padding:9px;margin-top:6px;border:1px solid #ccc;border-radius:8px}
+button{padding:10px 18px;background:#0b84ff;color:#fff;border:0;border-radius:8px;cursor:pointer}
+canvas{width:100%;height:330px;border:1px solid #ddd;border-radius:10px;margin:20px 0}
+table{width:100%;border-collapse:collapse;margin-top:20px}
+th,td{border:1px solid #ddd;padding:10px;text-align:right}
+th{background:#0b84ff;color:white}
+td:first-child,th:first-child{text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>投資複利計算機</h1>
+
+<div class="input-grid">
+  <div><label>起始本金</label><input id="principal" type="number" value="1000000"></div>
+  <div><label>總投資年數</label><input id="years" type="number" value="10"></div>
+  <div><label>年度利息 / 年化報酬率(%)</label><input id="rate" type="number" value="6" step="0.1"></div>
+  <div><label>累積總額</label><input id="finalInput" type="text" readonly></div>
+</div>
+
+<button onclick="calculate()">開始計算</button>
+
+<h2>結論摘要</h2>
+<div class="summary">
+  <div class="card">初始本金<br><b id="sPrincipal"></b></div>
+  <div class="card">年利率<br><b id="sRate"></b></div>
+  <div class="card">期間(年)<br><b id="sYears"></b></div>
+  <div class="card">最終累積金額<br><b id="sFinal"></b></div>
+  <div class="card">總利息<br><b id="sInterest"></b></div>
+</div>
+
+<canvas id="chart" width="960" height="330"></canvas>
+
+<h2>年度細項表</h2>
+<table>
+<thead>
+<tr><th>年</th><th>期初金額</th><th>年度利息</th><th>期末累積金額</th></tr>
+</thead>
+<tbody id="detail"></tbody>
+</table>
+</div>
+
+<script>
+function money(n){return Math.round(n).toLocaleString("zh-TW");}
+
+function calculate(){
+  const p = Number(document.getElementById("principal").value);
+  const y = Number(document.getElementById("years").value);
+  const r = Number(document.getElementById("rate").value)/100;
+
+  let data=[], amount=p, tbody="";
+  for(let i=1;i<=y;i++){
+    let start=amount;
+    let interest=start*r;
+    amount=start+interest;
+    data.push({year:i,value:amount});
+    tbody += `<tr>
+      <td>${i}</td>
+      <td>${money(start)}</td>
+      <td>${money(interest)}</td>
+      <td>${money(amount)}</td>
+    </tr>`;
+  }
+
+  document.getElementById("sPrincipal").textContent = money(p);
+  document.getElementById("sRate").textContent = (r*100).toFixed(2)+"%";
+  document.getElementById("sYears").textContent = y+" 年";
+  document.getElementById("sFinal").textContent = money(amount);
+  document.getElementById("sInterest").textContent = money(amount-p);
+  document.getElementById("finalInput").value = money(amount);
+  document.getElementById("detail").innerHTML = tbody;
+
+  drawChart(data);
+}
+
+function drawChart(data){
+  const c=document.getElementById("chart"), ctx=c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+
+  const pad=55, w=c.width-pad*2, h=c.height-pad*2;
+  const max=Math.max(...data.map(d=>d.value/10000))*1.15;
+
+  ctx.beginPath();
+  ctx.moveTo(pad,pad); ctx.lineTo(pad,pad+h); ctx.lineTo(pad+w,pad+h);
+  ctx.stroke();
+
+  ctx.fillText("金額(萬)",10,25);
+  ctx.fillText("年",c.width-30,c.height-20);
+
+  ctx.beginPath();
+  data.forEach((d,i)=>{
+    const x=pad+(d.year-1)/(data.length-1||1)*w;
+    const yy=pad+h-(d.value/10000/max)*h;
+    if(i===0) ctx.moveTo(x,yy); else ctx.lineTo(x,yy);
+    ctx.fillText(d.year,x-4,pad+h+18);
+  });
+  ctx.strokeStyle="#0b84ff"; ctx.lineWidth=3; ctx.stroke();
+
+  ctx.fillStyle="#0b84ff";
+  data.forEach(d=>{
+    const x=pad+(d.year-1)/(data.length-1||1)*w;
+    const yy=pad+h-(d.value/10000/max)*h;
+    ctx.beginPath(); ctx.arc(x,yy,4,0,Math.PI*2); ctx.fill();
+  });
+
+  ctx.fillStyle="#222"; ctx.strokeStyle="#222"; ctx.lineWidth=1;
+}
+
+calculate();
+</script>
+</body>
+</html>
